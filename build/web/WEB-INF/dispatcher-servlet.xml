@@ -1,0 +1,73 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!-- was: <?xml version="1.0" encoding="UTF-8"?> -->
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:beans="http://www.springframework.org/schema/beans"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+       http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.0.xsd
+       http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd
+       http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd
+       http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.0.xsd"
+    default-autowire="byType">
+
+    <!--
+    Most controllers will use the ControllerClassNameHandlerMapping above, but
+    for the index controller we are using ParameterizableViewController, so we must
+    define an explicit mapping for it.
+    -->
+    <mvc:resources mapping="/resources/**" location="/resources/" cache-period="0"/>
+
+    <bean id="viewResolver"
+          class="org.springframework.web.servlet.view.InternalResourceViewResolver"
+          p:prefix="/WEB-INF/jsp/"
+          p:suffix=".jsp" />
+    
+    <beans:bean id="myDataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+        <beans:property name="driverClassName" value="com.mysql.jdbc.Driver" />
+        <beans:property name="url" value="jdbc:mysql://localhost:3306/movilpyme?zeroDateTimeBehavior=convertToNull" />
+        <beans:property name="username" value="root" />
+        <beans:property name="password" value="12345678" />
+    </beans:bean>
+    
+    <beans:bean id="mySessionFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+        <beans:property name="dataSource" ref="myDataSource" />
+        <beans:property name="annotatedClasses">
+            <beans:list>
+                <beans:value>com.mx.movilpyme.model.Empleado</beans:value>
+                <beans:value>com.mx.movilpyme.model.Horario</beans:value>
+                <beans:value>com.mx.movilpyme.model.Registro</beans:value>
+                <beans:value>com.mx.movilpyme.model.Puesto</beans:value>
+                <beans:value>com.mx.movilpyme.model.Concepto</beans:value>
+            </beans:list>
+        </beans:property>
+        <beans:property name="hibernateProperties">
+            <beans:props>
+                <beans:prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</beans:prop>
+		<beans:prop key="hibernate.show_sql">true</beans:prop>
+                <beans:prop key="hibernate.format_sql">true</beans:prop>
+                <beans:prop key="hibernate.current_session_context_class">thread</beans:prop>
+                <beans:prop key="hibernate.transaction.flush_before_completion">true</beans:prop>
+                <beans:prop key="hibernate.transaction.auto_close_session">true</beans:prop>
+            </beans:props>
+        </beans:property>
+    </beans:bean>
+    
+    <tx:annotation-driven transaction-manager="transactionManager"/>
+	
+    <beans:bean id="transactionManager" class="org.springframework.orm.hibernate4.HibernateTransactionManager">
+        <beans:property name="sessionFactory" ref="mySessionFactory" />        
+    </beans:bean>
+    
+    <context:component-scan base-package="com.mx.movilpyme.dao" />
+    <context:component-scan base-package="com.mx.movilpyme.controller" />
+    <context:component-scan base-package="com.mx.movilpyme.services" />
+
+    <mvc:annotation-driven />
+    
+</beans>

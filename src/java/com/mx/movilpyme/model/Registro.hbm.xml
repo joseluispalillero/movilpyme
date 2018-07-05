@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated Jul 4, 2018 8:03:37 PM by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+    <class name="com.mx.movilpyme.model.Registro" table="registro" catalog="movilpyme" optimistic-lock="version">
+        <id name="id" type="java.lang.Integer">
+            <column name="id" />
+            <generator class="identity" />
+        </id>
+        <property name="empleadoId" type="int">
+            <column name="empleado_id" not-null="true" />
+        </property>
+        <property name="conceptoId" type="java.lang.Integer">
+            <column name="concepto_id" />
+        </property>
+        <property name="horaEntrada" type="timestamp">
+            <column name="hora_entrada" length="19" not-null="true" />
+        </property>
+        <property name="horaSalida" type="timestamp">
+            <column name="hora_salida" length="19" />
+        </property>
+        <property name="fechaRegistro" type="date">
+            <column name="fecha_registro" length="10" not-null="true" />
+        </property>
+        <property name="retardo" type="java.lang.Boolean">
+            <column name="retardo" />
+        </property>
+    </class>
+</hibernate-mapping>
